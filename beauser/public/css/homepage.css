@@ -1,0 +1,29 @@
+.container2{
+    background-color: #DBD3C9;
+}
+h1{
+    color: #B4CEB3;
+    text-align: center;
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+.w-100 {
+    width: 50%!important;
+}
+.container1 {
+    height: 10%;
+    background-color: #88A0A8;
+}
+.container3 {
+    height: 40%;
+    background-color: #88A0A8;
+}
+p{
+    color: #FAD4D8;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+
+}
+.newColor{
+    color:#546A76 !important;
+}
