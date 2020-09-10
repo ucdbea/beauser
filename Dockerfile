@@ -14,17 +14,22 @@ ADD . /go/src/beauser
 RUN go get  github.com/revel/revel
 RUN go get  github.com/revel/cmd/revel
 
-RUN git clone https://github.com/ucdbea/beauser app
-RUN revel build -a app/beauser -m dev -v
+
 # RUN  --mount=type=ssh revel build -a github.com/ucdbea/beauser  
 # FROM alpine:3.8
 # Use the revel CLI to start up our application.
 # Open up the port where the app is running.
-FROM alpine:edge
+FROM golang:1.15.1-alpine3.12
 EXPOSE 9000
-COPY --from=build-env /go/target /
 COPY --from=build-env /go/src/beauser /opt/src
 WORKDIR /
+
+RUN apk add --no-cache git
+RUN go get  github.com/revel/revel
+RUN go get  github.com/revel/cmd/revel
+
+RUN revel build -a opt/src/beauser
+ENTRYPOINT revel run -a opt/src/beauser
 
 
 
