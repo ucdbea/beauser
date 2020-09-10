@@ -4,14 +4,14 @@ import (
 	"github.com/revel/revel"
 )
 
-type App struct {
+type Application struct {
 	*revel.Controller
 }
 
-func (c App) Index() revel.Result {
+func (c Application) Index() revel.Result {
 	return c.Render()
 }
 
-func (c App) Homepage() revel.Result{
+func (c Application) Homepage() revel.Result{
 	return c.Render()
 }
