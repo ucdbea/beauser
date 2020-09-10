@@ -15,7 +15,7 @@ RUN go get  github.com/revel/revel
 RUN go get  github.com/revel/cmd/revel
 
 RUN git clone https://github.com/ucdbea/beauser app
-RUN revel build -a /go/src/beauser/beauser
+RUN revel build -a app/beauser -m dev -v
 # RUN  --mount=type=ssh revel build -a github.com/ucdbea/beauser  
 # FROM alpine:3.8
 # Use the revel CLI to start up our application.
