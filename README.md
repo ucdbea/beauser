@@ -9,7 +9,7 @@ go get github.com/revel/cmd/revel
 # Run
 Once Revel framework is installed, you can run the server by:
 
-revel run go-revel-rest
+revel run beauser
 
 Note that the project must be located under $GOPATH/src/go-revel-rest
 
