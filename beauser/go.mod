@@ -3,6 +3,7 @@ module beauser
 go 1.15
 
 require (
+	firebase.google.com/go/v4 v4.0.0
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/garyburd/redigo v1.6.2 // indirect
@@ -18,6 +19,7 @@ require (
 	github.com/twinj/uuid v1.0.0 // indirect
 	github.com/xeonx/timeago v1.0.0-rc4 // indirect
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
+	google.golang.org/api v0.32.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/stack.v0 v0.0.0-20141108040640-9b43fcefddd0 // indirect
 )

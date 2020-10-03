@@ -2,6 +2,12 @@ package app
 
 import (
 	"github.com/revel/revel"
+	"context"
+	"log"
+
+	firebase "firebase.google.com/go/v4"
+	"firebase.google.com/go/v4/auth"
+	"google.golang.org/api/option"
 )
 
 var (
@@ -11,6 +17,17 @@ var (
 	// BuildTime revel app build-time (ldflags)
 	BuildTime string
 )
+
+func initializeAppDefault() *firebase.App {
+	// [START initialize_app_default_golang]
+	app, err := firebase.NewApp(context.Background(), nil)
+	if err != nil {
+		log.Fatalf("error initializing app: %v\n", err)
+	}
+	// [END initialize_app_default_golang]
+
+	return app
+}
 
 func init() {
 	// Filters is the default set of global filters.
@@ -29,7 +46,7 @@ func init() {
 		revel.BeforeAfterFilter,       // Call the before and after filter functions
 		revel.ActionInvoker,           // Invoke the action.
 	}
-
+	
 	// Register startup functions with OnAppStart
 	// revel.DevMode and revel.RunMode only work inside of OnAppStart. See Example Startup Script
 	// ( order dependent )
