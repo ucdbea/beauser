@@ -10,6 +10,11 @@ GET     /                                      Application.Homepage
 
 GET     /index                                 Application.Index
 
+GET     /sign-up                               Application.Signup
+
+Get     /sign-in                               Application.Signin
+
+
 
 # Ignore favicon requests
 #GET     /favicon.ico                            404

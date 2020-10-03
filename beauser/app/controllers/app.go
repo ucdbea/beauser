@@ -15,3 +15,11 @@ func (c Application) Index() revel.Result {
 func (c Application) Homepage() revel.Result{
 	return c.Render()
 }
+
+func (c Application) Signin() revel.Result{
+	return c.Render()
+}
+
+func (c Application) Signup() revel.Result{
+	return c.Render()
+}
