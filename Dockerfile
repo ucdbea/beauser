@@ -10,9 +10,7 @@ ADD . /go/src/beauser
 # Grab the source code and add it to the workspace.
 
 
-# Install revel and the revel CLI.
-RUN go get  github.com/revel/revel
-RUN go get  github.com/revel/cmd/revel
+
 
 
 # RUN  --mount=type=ssh revel build -a github.com/ucdbea/beauser  
@@ -21,15 +19,16 @@ RUN go get  github.com/revel/cmd/revel
 # Open up the port where the app is running.
 FROM golang:1.15.1-alpine3.12
 EXPOSE 9000
-COPY --from=build-env /go/src/beauser /opt/src
+COPY --from=build-env /go/src/beauser /workspace/opt/src
 WORKDIR /
 
 RUN apk add --no-cache git
 RUN go get  github.com/revel/revel
 RUN go get  github.com/revel/cmd/revel
-
-RUN revel build -a opt/src/beauser
-ENTRYPOINT revel run -a opt/src/beauser
+RUN go get  firebase.google.com/go
+RUN go get -u cloud.google.com/go/storage
+RUN revel build -a /workspace/opt/src/beauser
+ENTRYPOINT revel run -a /workspace/opt/src/beauser
 
 
 

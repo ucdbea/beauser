@@ -12,8 +12,9 @@ GET     /index                                 Application.Index
 
 GET     /sign-up                               Application.Signup
 
-Get     /sign-in                               Application.Signin
+GET     /sign-in                               Application.Signin
 
+POST    /login                                  Application.Login
 
 
 # Ignore favicon requests

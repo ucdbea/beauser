@@ -1,12 +1,18 @@
 package app
 
 import (
-	"github.com/revel/revel"
 	"context"
+	"fmt"
 	"log"
+	"net/http"
+	"os"
 
+	"cloud.google.com/go/storage"
 	firebase "firebase.google.com/go/v4"
-	"firebase.google.com/go/v4/auth"
+	"github.com/revel/revel"
+	"github.com/revel/revel/logger"
+	"github.com/valyala/fasthttp"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
 
@@ -17,17 +23,6 @@ var (
 	// BuildTime revel app build-time (ldflags)
 	BuildTime string
 )
-
-func initializeAppDefault() *firebase.App {
-	// [START initialize_app_default_golang]
-	app, err := firebase.NewApp(context.Background(), nil)
-	if err != nil {
-		log.Fatalf("error initializing app: %v\n", err)
-	}
-	// [END initialize_app_default_golang]
-
-	return app
-}
 
 func init() {
 	// Filters is the default set of global filters.
@@ -46,13 +41,90 @@ func init() {
 		revel.BeforeAfterFilter,       // Call the before and after filter functions
 		revel.ActionInvoker,           // Invoke the action.
 	}
-	
+	logger.LogFunctionMap["stdoutjson"] =
+		func(c *logger.CompositeMultiHandler, options *logger.LogOptions) {
+			// Set the json formatter to os.Stdout, replace any existing handlers for the level specified
+			c.SetJson(os.Stdout, options)
+		}
+	revel.AddInitEventHandler(func(event revel.Event, i interface{}) revel.EventResponse {
+		switch event {
+		case revel.ENGINE_BEFORE_INITIALIZED:
+
+			if revel.RunMode == "dev-fast" {
+				revel.AddHTTPMux("/this/is/a/test", fasthttp.RequestHandler(func(ctx *fasthttp.RequestCtx) {
+					fmt.Fprintln(ctx, "Hi there, it worked", string(ctx.Path()))
+					ctx.SetStatusCode(200)
+				}))
+				revel.AddHTTPMux("/this/is/", fasthttp.RequestHandler(func(ctx *fasthttp.RequestCtx) {
+					fmt.Fprintln(ctx, "Hi there, shorter prefix", string(ctx.Path()))
+					ctx.SetStatusCode(200)
+				}))
+			} else {
+				revel.AddHTTPMux("/this/is/a/test", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					fmt.Fprintln(w, "Hi there, it worked", r.URL.Path)
+					w.WriteHeader(200)
+				}))
+				revel.AddHTTPMux("/this/is/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					fmt.Fprintln(w, "Hi there, shorter prefix", r.URL.Path)
+					w.WriteHeader(200)
+				}))
+
+			}
+		}
+		return 0
+	})
+	explicit("./Firestore_SA.json", "beawebsite-86b5d")
+	ctx := context.Background()
+	sa := option.WithCredentialsFile("./Firestore_SA.json")
+	app, err := firebase.NewApp(ctx, nil, sa)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	client, err := app.Firestore(ctx)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer client.Close()
 	// Register startup functions with OnAppStart
 	// revel.DevMode and revel.RunMode only work inside of OnAppStart. See Example Startup Script
 	// ( order dependent )
 	// revel.OnAppStart(ExampleStartupScript)
 	// revel.OnAppStart(InitDB)
 	// revel.OnAppStart(FillCache)
+	// revel.OnAppStart(func() {
+	// 	var fire = firebase.Config{ProjectID: "beawebsite-86b5d"}
+	// 	sa := option.WithCredentialsFile("/Users/r.c.dawson/Desktop/Webdevelopment/beawebsite-86b5d-firebase-adminsdk-zxfqf-d811c41c09.json")
+	// 	fs, err := firebase.NewApp(context.Background(), &fire, sa)
+	// 	if err != nil {
+	// 		log.Fatalf("error initializing app: %v\n", err)
+	// 	}
+	// 	client, err := fs.Firestore(context.Background())
+	// 	if err != nil {
+	// 		log.Fatalln(err)
+	// 	}
+	// })
+
+}
+
+func explicit(jsonPath, projectID string) {
+	ctx := context.Background()
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile(jsonPath))
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Buckets:")
+	it := client.Buckets(ctx, projectID)
+	for {
+		battrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(battrs.Name)
+	}
 }
 
 // HeaderFilter adds common security headers

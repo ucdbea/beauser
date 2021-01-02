@@ -1,0 +1,11 @@
+services:
+    bea_web:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - .:/workspace
+        init: true
+        stdin_open: true
+        tty: true
+   
