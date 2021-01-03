@@ -16,6 +16,8 @@ GET     /sign-in                               Application.Signin
 
 POST    /login                                  Application.Login
 
+GET    /Calendar                                Calendar.Calendar
+
 
 # Ignore favicon requests
 #GET     /favicon.ico                            404
