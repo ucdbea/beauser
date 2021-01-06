@@ -83,6 +83,7 @@ func (c Application) Index() revel.Result {
 }
 func (c Application) Login(email, password string, remember bool) revel.Result {
 	ctx := context.Background()
+
 	sa := option.WithCredentialsFile("./Firestore_SA.json")
 	app, err := firebase.NewApp(ctx, nil, sa)
 	if err != nil {
@@ -104,7 +105,6 @@ func (c Application) Login(email, password string, remember bool) revel.Result {
 	}
 
 	return c.Redirect(Application.Homepage)
-	return c.Redirect(Application.Index)
 
 }
 

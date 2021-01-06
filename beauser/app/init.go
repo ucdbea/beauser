@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"cloud.google.com/go/storage"
-	firebase "firebase.google.com/go/v4"
 	"github.com/revel/revel"
 	"github.com/revel/revel/logger"
 	"github.com/valyala/fasthttp"
@@ -74,18 +73,8 @@ func init() {
 		return 0
 	})
 	explicit("./Firestore_SA.json", "beawebsite-86b5d")
-	ctx := context.Background()
-	sa := option.WithCredentialsFile("./Firestore_SA.json")
-	app, err := firebase.NewApp(ctx, nil, sa)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	explicit("./RealtimeDatabase_SA.json", "beawebsite-86b5d")
 
-	client, err := app.Firestore(ctx)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer client.Close()
 	// Register startup functions with OnAppStart
 	// revel.DevMode and revel.RunMode only work inside of OnAppStart. See Example Startup Script
 	// ( order dependent )

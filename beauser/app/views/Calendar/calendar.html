@@ -37,7 +37,15 @@
 			var eventObject = {
 				title: $.trim($(this).text()) // use the element's text as the event title
 			};
-
+			$.ajax({
+            url: Calendar.addEvent,
+            type: "POST",
+            data:{'button':button,"email":Email},
+            success: function(results){
+                console.log(results)
+                $('#response').html(results);
+            }
+        });
 			// store the Event Object in the DOM element so we can get to it later
 			$(this).data('eventObject', eventObject);
 
